@@ -1,0 +1,12 @@
+{
+	"request": {
+		"companyId": "empresa-ui-teste-260o66",
+		"jobId": "analista-de-rh-27v4lg",
+		"source": "careers",
+		"sourceDetail": null
+	},
+	"response": {
+		"interviewUrl": "https://interview.example.com/job/analista-de-rh-27v4lg/company/empresa-ui-teste-260o66/login",
+		"processEntryId": "7f3a1b2c-0000-4111-9222-333344445555"
+	}
+}

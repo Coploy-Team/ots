@@ -1,0 +1,14 @@
+{
+	"name": "ots",
+	"version": "0.2.0",
+	"description": "OTS — Open Talent Standard: schemas normativos, specs e suíte de conformidade",
+	"license": "Apache-2.0",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"test": "npm test --workspace=@coploy/ots-conformance",
+		"generate:binding": "npm run generate:binding --workspace=@coploy/ots-contract"
+	}
+}

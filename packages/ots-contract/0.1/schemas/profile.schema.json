@@ -1,0 +1,109 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/schemas/profile.schema.json",
+	"title": "Profile",
+	"description": "Currículo estruturado e portátil do talento (self-scoped no 0.1). Atributos protegidos NUNCA entram no perfil portátil — proibição executável abaixo: documento de identidade, nascimento, gênero, raça (§2.4.4).",
+	"type": "object",
+	"properties": {
+		"id": { "type": "string", "minLength": 1 },
+		"name": { "type": ["string", "null"] },
+		"email": { "type": ["string", "null"] },
+		"phone": { "type": ["string", "null"] },
+		"photoUrl": { "type": ["string", "null"] },
+		"headline": { "type": ["string", "null"] },
+		"summary": { "type": ["string", "null"] },
+		"occupation": { "type": ["string", "null"] },
+		"level": { "type": ["string", "null"] },
+		"yearsOfExperience": { "type": ["number", "null"], "minimum": 0 },
+		"professionalObjectives": { "type": ["string", "null"] },
+		"company": { "type": ["string", "null"] },
+		"location": { "type": ["string", "null"] },
+		"countryOfResidence": {
+			"type": ["string", "null"],
+			"description": "Preferência: ISO-3166-1 alpha-2."
+		},
+		"countriesOfInterest": { "type": ["array", "null"], "items": { "type": "string" } },
+		"skills": { "type": ["array", "null"], "items": { "type": "string" } },
+		"resumeUrl": { "type": ["string", "null"], "format": "uri" },
+		"linkedinUrl": { "type": ["string", "null"], "format": "uri" },
+		"completeness": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+		"missingFields": { "type": ["array", "null"], "items": { "type": "string" } },
+		"fieldSources": {
+			"type": ["object", "null"],
+			"description": "Proveniência por campo (§3): fonte automática não sobrescreve em silêncio o que a pessoa digitou.",
+			"additionalProperties": {
+				"type": "string",
+				"enum": ["chat", "dashboard", "resume", "linkedin", "interview"]
+			}
+		},
+		"experiences": {
+			"type": ["array", "null"],
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": ["string", "null"] },
+					"title": { "type": ["string", "null"] },
+					"company": { "type": ["string", "null"] },
+					"location": { "type": ["string", "null"] },
+					"startDate": { "type": ["string", "null"] },
+					"endDate": { "type": ["string", "null"] },
+					"current": { "type": ["boolean", "null"] },
+					"description": { "type": ["string", "null"] },
+					"skills": { "type": ["array", "null"], "items": { "type": "string" } }
+				}
+			}
+		},
+		"education": {
+			"type": ["array", "null"],
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": ["string", "null"] },
+					"institution": { "type": ["string", "null"] },
+					"degree": { "type": ["string", "null"] },
+					"fieldOfStudy": { "type": ["string", "null"] },
+					"startDate": { "type": ["string", "null"] },
+					"endDate": { "type": ["string", "null"] },
+					"current": { "type": ["boolean", "null"] },
+					"description": { "type": ["string", "null"] }
+				}
+			}
+		},
+		"languages": {
+			"type": ["array", "null"],
+			"items": {
+				"type": "object",
+				"properties": {
+					"language": { "type": ["string", "null"] },
+					"proficiency": {
+						"type": ["string", "null"],
+						"enum": ["basic", "intermediate", "advanced", "fluent", "native", null]
+					}
+				}
+			}
+		},
+		"certifications": {
+			"type": ["array", "null"],
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": ["string", "null"] },
+					"name": { "type": ["string", "null"] },
+					"issuer": { "type": ["string", "null"] },
+					"issueDate": { "type": ["string", "null"] },
+					"expirationDate": { "type": ["string", "null"] },
+					"credentialUrl": { "type": ["string", "null"] }
+				}
+			}
+		},
+		"cpf": false,
+		"document": false,
+		"nationalId": false,
+		"birthDate": false,
+		"dateOfBirth": false,
+		"gender": false,
+		"race": false,
+		"ethnicity": false
+	},
+	"required": ["id"]
+}

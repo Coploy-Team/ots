@@ -1,0 +1,14 @@
+{
+	"$comment": "Entrada em processo de um ATS SEM entrevista — só o núcleo. Sem score, sem approved, sem fit.",
+	"id": "0d81ca46-9cbd-4349-9b96-9882233e4fc0",
+	"jobId": "desenvolvedor-nodejs-9x2k1",
+	"companyId": "forkly-studio-267jk0",
+	"jobName": "Desenvolvedor NodeJS",
+	"companyName": "Forkly Studio",
+	"status": "pending",
+	"startedAt": "2026-08-21T01:13:12.422Z",
+	"completedAt": null,
+	"feedback": null,
+	"rejectionExplanation": null,
+	"failedRequirementLabel": null
+}

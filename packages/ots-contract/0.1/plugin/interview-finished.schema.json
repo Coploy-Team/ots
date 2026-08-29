@@ -1,0 +1,49 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/plugin/interview-finished.schema.json",
+	"title": "InterviewFinishedEvent",
+	"description": "SAÍDA do plugin de motor (ADR-007, decisão 2): o evento que o motor entrega ao ATS quando a entrevista termina — o shape que os Result Webhooks da referência já usam em produção, congelado como contrato. Aqui o veredito EXISTE (score/approved): este evento é ATS↔motor, superfície da EMPRESA — nunca do talento (contraste com ProcessEntry, onde score é proibido). Entrega: POST na URL configurada, retry é responsabilidade do motor, e o ATS DEVE tratar entregas duplicadas como idempotentes por (interviewId).",
+	"type": "object",
+	"properties": {
+		"event": { "const": "interview.finished" },
+		"interviewId": {
+			"type": "string",
+			"minLength": 1,
+			"description": "Id da participação (jobApplied na referência) — a chave de idempotência."
+		},
+		"jobId": { "type": "string", "minLength": 1 },
+		"companyId": { "type": "string", "minLength": 1 },
+		"userId": { "type": "string", "minLength": 1 },
+		"candidateEmail": { "type": "string" },
+		"candidateName": { "type": "string" },
+		"jobName": { "type": "string" },
+		"recruiterInterviewLink": {
+			"type": "string",
+			"description": "Onde o recrutador abre o resultado completo."
+		},
+		"candidateInterviewLink": { "type": "string" },
+		"score": { "type": "number", "minimum": 0, "maximum": 10 },
+		"approved": {
+			"type": "boolean",
+			"description": "score >= approvalThreshold configurado no webhook (default 7 na referência)."
+		},
+		"feedback": { "type": "string", "description": "Leitura para a EMPRESA." },
+		"candidateFeedback": { "type": "string", "description": "Leitura própria para o candidato." },
+		"timestamp": { "type": "string", "format": "date-time" }
+	},
+	"required": [
+		"event",
+		"interviewId",
+		"jobId",
+		"companyId",
+		"userId",
+		"candidateEmail",
+		"candidateName",
+		"jobName",
+		"score",
+		"approved",
+		"feedback",
+		"candidateFeedback",
+		"timestamp"
+	]
+}

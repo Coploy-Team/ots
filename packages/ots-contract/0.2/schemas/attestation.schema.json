@@ -1,0 +1,120 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.2/schemas/attestation.schema.json",
+	"title": "AttestationClaims",
+	"description": "Claims do documento `ots.attestation` (OTS 0.2 draft): o registro portátil e verificável de que uma entrevista ACONTECEU — quem, quando, em que processo e (se o talento escolher) o resultado agregado. NUNCA o conteúdo bruto: nenhuma resposta, transcrição, áudio ou vídeo entra aqui. O documento viaja como JWS compact (EdDSA/Ed25519), typ `ots-attestation+jws`; este schema valida o PAYLOAD decodificado. Emissão é ato explícito do talento, que escolhe o tier de divulgação; revogação é dele e é consultável em statusUrl.",
+	"type": "object",
+	"properties": {
+		"iss": {
+			"type": "string",
+			"format": "uri",
+			"description": "Emissor: a URL base do provedor que CONDUZIU a entrevista. O JWKS dele vive em {iss}/.well-known/ots/jwks.json — confiança federada por domínio, como DKIM; não existe autoridade central."
+		},
+		"sub": {
+			"type": "string",
+			"minLength": 1,
+			"description": "Id OPACO do talento no emissor. Nunca é documento nacional nem e-mail em claro."
+		},
+		"jti": {
+			"type": "string",
+			"minLength": 8,
+			"description": "Id único do attestation — a chave de revogação e de idempotência."
+		},
+		"iat": { "type": "integer", "description": "Emissão (epoch seconds)." },
+		"exp": {
+			"type": ["integer", "null"],
+			"description": "Expiração escolhida pelo talento na emissão (default da referência: 2 anos). Sem exp = não expira, só revoga."
+		},
+		"ots_version": { "const": "0.2" },
+		"tier": {
+			"type": "string",
+			"enum": ["existence", "summary", "full"],
+			"description": "O QUANTO o talento escolheu divulgar: `existence` = só que a entrevista aconteceu; `summary` = + leitura qualitativa (sem nota); `full` = + resultado numérico agregado. O tier é decidido pela pessoa NO ATO da emissão — consentimento é parte do documento, não configuração do provedor."
+		},
+		"subject": {
+			"type": "object",
+			"description": "Como ligar a prova à PESSOA sem carregar PII em claro. O verificador confere o e-mail que a própria pessoa fornecer contra o hash.",
+			"properties": {
+				"displayName": { "type": ["string", "null"] },
+				"emailHash": {
+					"type": ["string", "null"],
+					"pattern": "^sha256:[0-9a-f]{64}$",
+					"description": "sha256:<hex> do e-mail em minúsculas, sem espaços."
+				}
+			}
+		},
+		"process": {
+			"type": "object",
+			"description": "Contexto: em que processo a entrevista aconteceu. Sem vaga e sem empresa a prova não significa nada (ADR-006, decisão 1).",
+			"properties": {
+				"companyName": { "type": ["string", "null"] },
+				"jobTitle": { "type": ["string", "null"] },
+				"processEntryId": {
+					"type": ["string", "null"],
+					"description": "Id da ProcessEntry no emissor, quando o talento aceitar expô-lo."
+				}
+			}
+		},
+		"interview": {
+			"type": "object",
+			"description": "O fato atestado.",
+			"properties": {
+				"completedAt": { "type": "string", "format": "date-time" },
+				"mode": { "type": ["string", "null"], "description": "video | voice | whatsapp | …" },
+				"language": { "type": ["string", "null"], "description": "BCP 47." },
+				"questionsTotal": { "type": ["integer", "null"], "minimum": 0 },
+				"durationSeconds": { "type": ["integer", "null"], "minimum": 0 }
+			},
+			"required": ["completedAt"]
+		},
+		"outcome": {
+			"type": ["object", "null"],
+			"description": "Resultado AGREGADO — presente conforme o tier. `summary`: só campos qualitativos. `full`: também o score. Nunca respostas individuais.",
+			"properties": {
+				"score": {
+					"type": ["number", "null"],
+					"minimum": 0,
+					"maximum": 10,
+					"description": "Só no tier `full`."
+				},
+				"strengths": { "type": ["array", "null"], "items": { "type": "string" } },
+				"developmentAreas": { "type": ["array", "null"], "items": { "type": "string" } }
+			}
+		},
+		"statusUrl": {
+			"type": "string",
+			"format": "uri",
+			"description": "Onde consultar revogação: GET devolve attestation-status.schema.json. Assinatura verifica OFFLINE; status é a única consulta online — como certificado × CRL."
+		},
+		"approved": false,
+		"answers": false,
+		"transcript": false,
+		"videoUrl": false,
+		"audioUrl": false,
+		"cpf": false,
+		"gender": false,
+		"birthDate": false
+	},
+	"required": ["iss", "sub", "jti", "iat", "ots_version", "tier", "interview", "statusUrl"],
+	"allOf": [
+		{
+			"if": { "properties": { "tier": { "const": "existence" } } },
+			"then": {
+				"properties": { "outcome": { "type": "null" } },
+				"description": "Tier existence não carrega resultado nenhum."
+			}
+		},
+		{
+			"if": { "properties": { "tier": { "const": "summary" } } },
+			"then": {
+				"properties": {
+					"outcome": {
+						"type": ["object", "null"],
+						"properties": { "score": { "type": "null" } }
+					}
+				},
+				"description": "Tier summary é qualitativo: score proibido."
+			}
+		}
+	]
+}

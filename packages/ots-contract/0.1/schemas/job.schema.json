@@ -1,0 +1,38 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/schemas/job.schema.json",
+	"title": "Job",
+	"description": "Projeção pública de uma vaga. Elegibilidade (normativo): só vagas públicas, abertas, não arquivadas; lookup de vaga privada/encerrada DEVE devolver não-encontrado. Proibido na superfície pública: perguntas de entrevista, avaliação interna, dados de criador, lista de candidatos.",
+	"type": "object",
+	"properties": {
+		"jobId": { "type": "string", "minLength": 1 },
+		"companyId": { "type": "string", "minLength": 1 },
+		"title": { "type": "string", "minLength": 1 },
+		"companyName": { "type": ["string", "null"] },
+		"companyLogo": { "type": ["string", "null"], "format": "uri" },
+		"location": { "type": ["string", "null"] },
+		"workModality": { "type": ["string", "null"] },
+		"employmentType": { "type": ["string", "null"] },
+		"careerLevel": { "type": ["string", "null"] },
+		"language": {
+			"type": ["string", "null"],
+			"description": "BCP 47. Ausente = legado pt-BR na implementação de referência."
+		},
+		"salary": {
+			"description": "Texto livre (fallback de compatibilidade) OU a forma tipada — a tipada é a que interopera (ADR-006, decisão 5).",
+			"oneOf": [
+				{ "type": "string" },
+				{ "type": "null" },
+				{ "$ref": "salary.schema.json" }
+			]
+		},
+		"mainSkills": { "type": ["string", "null"] },
+		"postedAt": { "type": ["string", "null"], "format": "date-time" },
+		"interviewUrl": {
+			"type": ["string", "null"],
+			"format": "uri",
+			"description": "OPCIONAL (ADR-006, decisão 5 — vazamento 1): um provedor sem entrevista por IA é conforme. Quando o provedor tem entrevista, o link também aparece na extensão `interview` da entrada em processo."
+		}
+	},
+	"required": ["jobId", "companyId", "title"]
+}
