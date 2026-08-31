@@ -1,0 +1,51 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/schemas/process-entry.schema.json",
+	"title": "ProcessEntry",
+	"description": "Participação do talento autenticado em uma vaga. NÚCLEO MÍNIMO (ADR-006, decisão 5 — vazamento 2): para outro ATS, candidatura existe e não é entrevista; progresso de entrevista mora na extensão opcional `interview`. Nota numérica, aprovação e fit são PROIBIDOS — veredito é do recrutador, fora do protocolo (proibição executável abaixo via `false`).",
+	"type": "object",
+	"properties": {
+		"id": { "type": "string", "minLength": 1 },
+		"jobId": { "type": ["string", "null"] },
+		"companyId": { "type": ["string", "null"] },
+		"jobName": { "type": ["string", "null"] },
+		"companyName": { "type": ["string", "null"] },
+		"companyLogo": { "type": ["string", "null"] },
+		"status": {
+			"type": "string",
+			"enum": ["pending", "in_progress", "completed"],
+			"description": "Progresso da PARTICIPAÇÃO, não etapa interna do pipeline do recrutador."
+		},
+		"startedAt": { "type": ["string", "null"], "format": "date-time" },
+		"completedAt": { "type": ["string", "null"], "format": "date-time" },
+		"feedback": {
+			"type": ["object", "null"],
+			"description": "Observações NÃO-avaliativas, na visão do talento.",
+			"properties": {
+				"strengths": { "type": "array", "items": { "type": "string" } },
+				"development": { "type": "array", "items": { "type": "string" } },
+				"suggestions": { "type": "array", "items": { "type": "string" } }
+			}
+		},
+		"rejectionExplanation": {
+			"type": ["string", "null"],
+			"description": "Explicação humana quando houve knockout/reprovação visível ao candidato."
+		},
+		"failedRequirementLabel": { "type": ["string", "null"] },
+		"interview": {
+			"type": ["object", "null"],
+			"description": "EXTENSÃO opcional: progresso de entrevista, para provedores que a têm. Núcleo do protocolo não a exige.",
+			"properties": {
+				"questionsAnswered": { "type": "integer", "minimum": 0 },
+				"questionsTotal": { "type": "integer", "minimum": 0 },
+				"interviewUrl": { "type": "string", "format": "uri" }
+			},
+			"required": ["questionsAnswered", "questionsTotal"]
+		},
+		"score": false,
+		"approved": false,
+		"fit": false,
+		"recommendation": false
+	},
+	"required": ["id", "status"]
+}

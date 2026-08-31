@@ -1,0 +1,18 @@
+{
+	"name": "@coploy/ots-contract",
+	"version": "0.1.0",
+	"description": "OTS — Open Talent Standard: schemas normativos (JSON Schema 2020-12) e contrato do plugin de motor de entrevista",
+	"license": "Apache-2.0",
+	"private": true,
+	"files": [
+		"0.1",
+		"0.2",
+		"scripts",
+		"README.md"
+	],
+	"scripts": {
+		"generate:binding": "node scripts/generate-binding-openapi.mjs",
+		"lint": "node -e \"const fs=require('fs'),path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):e.name.endsWith('.json')?[path.join(d,e.name)]:[]);for(const d of ['0.1','0.2']){for(const f of walk(d)){JSON.parse(fs.readFileSync(f,'utf8'))}}console.log('json ok')\"",
+		"test": "echo 'validação executável vive em @coploy/ots-conformance'"
+	}
+}

@@ -1,0 +1,1010 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "OTS 0.1 — REST binding",
+		"version": "0.1.0",
+		"description": "Binding REST do Open Talent Standard. Gerado do artefato normativo (packages/ots-contract/0.1/schemas) — nunca editado à mão. Descoberta de vaga é pública; perfil e participações são do talento (OAuth).",
+		"license": {
+			"name": "Apache-2.0",
+			"identifier": "Apache-2.0"
+		}
+	},
+	"paths": {
+		"/ots/v0.1/jobs": {
+			"get": {
+				"operationId": "searchJobs",
+				"summary": "Public job discovery",
+				"parameters": [
+					{
+						"name": "query",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "language",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"enum": [
+								"pt-BR",
+								"en"
+							]
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 25,
+							"default": 10
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Jobs matching the filter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"required": [
+										"jobs",
+										"totalAvailable"
+									],
+									"properties": {
+										"jobs": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Job"
+											}
+										},
+										"totalAvailable": {
+											"type": "integer",
+											"minimum": 0
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/ots/v0.1/jobs/{companyId}/{jobId}": {
+			"get": {
+				"operationId": "getJobDetails",
+				"summary": "Job details (public jobs only — private/closed jobs are 404)",
+				"parameters": [
+					{
+						"name": "companyId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "jobId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Job with long-form fields",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/JobDetails"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not public, closed or unknown — indistinguishable on purpose"
+					}
+				}
+			}
+		},
+		"/ots/v0.1/profile": {
+			"get": {
+				"operationId": "getProfile",
+				"summary": "The authenticated talent's portable profile",
+				"security": [
+					{
+						"oauth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Profile",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Profile"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid token"
+					}
+				}
+			}
+		},
+		"/ots/v0.1/process-entries": {
+			"get": {
+				"operationId": "listProcessEntries",
+				"summary": "The authenticated talent's process participations",
+				"security": [
+					{
+						"oauth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Entries, most recent first",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"required": [
+										"entries"
+									],
+									"properties": {
+										"entries": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/ProcessEntry"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid token"
+					}
+				}
+			},
+			"post": {
+				"operationId": "createProcessEntry",
+				"summary": "Enter a process (prepares or resumes the interview session)",
+				"security": [
+					{
+						"oauth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": [
+									"companyId",
+									"jobId"
+								],
+								"properties": {
+									"companyId": {
+										"type": "string"
+									},
+									"jobId": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "The entry, with the interview extension when the provider has one",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"required": [
+										"entry"
+									],
+									"properties": {
+										"entry": {
+											"$ref": "#/components/schemas/ProcessEntry"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid token"
+					},
+					"404": {
+						"description": "Job not public, closed or unknown"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Job": {
+				"title": "Job",
+				"description": "Projeção pública de uma vaga. Elegibilidade (normativo): só vagas públicas, abertas, não arquivadas; lookup de vaga privada/encerrada DEVE devolver não-encontrado. Proibido na superfície pública: perguntas de entrevista, avaliação interna, dados de criador, lista de candidatos.",
+				"type": "object",
+				"properties": {
+					"jobId": {
+						"type": "string",
+						"minLength": 1
+					},
+					"companyId": {
+						"type": "string",
+						"minLength": 1
+					},
+					"title": {
+						"type": "string",
+						"minLength": 1
+					},
+					"companyName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"companyLogo": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "uri"
+					},
+					"location": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"workModality": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"employmentType": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"careerLevel": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"language": {
+						"type": [
+							"string",
+							"null"
+						],
+						"description": "BCP 47. Ausente = legado pt-BR na implementação de referência."
+					},
+					"salary": {
+						"description": "Texto livre (fallback de compatibilidade) OU a forma tipada — a tipada é a que interopera (ADR-006, decisão 5).",
+						"oneOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							},
+							{
+								"$ref": "#/components/schemas/Salary"
+							}
+						]
+					},
+					"mainSkills": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"postedAt": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date-time"
+					},
+					"interviewUrl": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "uri",
+						"description": "OPCIONAL (ADR-006, decisão 5 — vazamento 1): um provedor sem entrevista por IA é conforme. Quando o provedor tem entrevista, o link também aparece na extensão `interview` da entrada em processo."
+					}
+				},
+				"required": [
+					"jobId",
+					"companyId",
+					"title"
+				]
+			},
+			"JobDetails": {
+				"title": "JobDetails",
+				"description": "Job + campos de leitura longa. `questionCount` expõe a QUANTIDADE de perguntas quando o provedor tem entrevista — nunca o conteúdo.",
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Job"
+					}
+				],
+				"type": "object",
+				"properties": {
+					"description": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"requirements": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"responsibilities": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"benefits": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"companyDescription": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"contractType": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"jobHours": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"educationalRequirements": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "string"
+						}
+					},
+					"requiresPreviousExperience": {
+						"type": [
+							"boolean",
+							"null"
+						]
+					},
+					"closingDate": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date-time"
+					},
+					"interviewMode": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"questionCount": {
+						"type": [
+							"integer",
+							"null"
+						],
+						"minimum": 0,
+						"description": "Opcional como o interviewUrl: só existe onde há entrevista."
+					}
+				}
+			},
+			"ProcessEntry": {
+				"title": "ProcessEntry",
+				"description": "Participação do talento autenticado em uma vaga. NÚCLEO MÍNIMO (ADR-006, decisão 5 — vazamento 2): para outro ATS, candidatura existe e não é entrevista; progresso de entrevista mora na extensão opcional `interview`. Nota numérica, aprovação e fit são PROIBIDOS — veredito é do recrutador, fora do protocolo (proibição executável abaixo via `false`).",
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"minLength": 1
+					},
+					"jobId": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"companyId": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"jobName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"companyName": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"companyLogo": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"pending",
+							"in_progress",
+							"completed"
+						],
+						"description": "Progresso da PARTICIPAÇÃO, não etapa interna do pipeline do recrutador."
+					},
+					"startedAt": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date-time"
+					},
+					"completedAt": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "date-time"
+					},
+					"feedback": {
+						"type": [
+							"object",
+							"null"
+						],
+						"description": "Observações NÃO-avaliativas, na visão do talento.",
+						"properties": {
+							"strengths": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"development": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"suggestions": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"rejectionExplanation": {
+						"type": [
+							"string",
+							"null"
+						],
+						"description": "Explicação humana quando houve knockout/reprovação visível ao candidato."
+					},
+					"failedRequirementLabel": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"interview": {
+						"type": [
+							"object",
+							"null"
+						],
+						"description": "EXTENSÃO opcional: progresso de entrevista, para provedores que a têm. Núcleo do protocolo não a exige.",
+						"properties": {
+							"questionsAnswered": {
+								"type": "integer",
+								"minimum": 0
+							},
+							"questionsTotal": {
+								"type": "integer",
+								"minimum": 0
+							},
+							"interviewUrl": {
+								"type": "string",
+								"format": "uri"
+							}
+						},
+						"required": [
+							"questionsAnswered",
+							"questionsTotal"
+						]
+					},
+					"score": false,
+					"approved": false,
+					"fit": false,
+					"recommendation": false
+				},
+				"required": [
+					"id",
+					"status"
+				]
+			},
+			"Profile": {
+				"title": "Profile",
+				"description": "Currículo estruturado e portátil do talento (self-scoped no 0.1). Atributos protegidos NUNCA entram no perfil portátil — proibição executável abaixo: documento de identidade, nascimento, gênero, raça (§2.4.4).",
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"minLength": 1
+					},
+					"name": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"email": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"phone": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"photoUrl": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"headline": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"summary": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"occupation": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"level": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"yearsOfExperience": {
+						"type": [
+							"number",
+							"null"
+						],
+						"minimum": 0
+					},
+					"professionalObjectives": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"company": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"location": {
+						"type": [
+							"string",
+							"null"
+						]
+					},
+					"countryOfResidence": {
+						"type": [
+							"string",
+							"null"
+						],
+						"description": "Preferência: ISO-3166-1 alpha-2."
+					},
+					"countriesOfInterest": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "string"
+						}
+					},
+					"skills": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "string"
+						}
+					},
+					"resumeUrl": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "uri"
+					},
+					"linkedinUrl": {
+						"type": [
+							"string",
+							"null"
+						],
+						"format": "uri"
+					},
+					"completeness": {
+						"type": [
+							"number",
+							"null"
+						],
+						"minimum": 0,
+						"maximum": 100
+					},
+					"missingFields": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "string"
+						}
+					},
+					"fieldSources": {
+						"type": [
+							"object",
+							"null"
+						],
+						"description": "Proveniência por campo (§3): fonte automática não sobrescreve em silêncio o que a pessoa digitou.",
+						"additionalProperties": {
+							"type": "string",
+							"enum": [
+								"chat",
+								"dashboard",
+								"resume",
+								"linkedin",
+								"interview"
+							]
+						}
+					},
+					"experiences": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"title": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"company": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"location": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"startDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"endDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"current": {
+									"type": [
+										"boolean",
+										"null"
+									]
+								},
+								"description": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"skills": {
+									"type": [
+										"array",
+										"null"
+									],
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"education": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"institution": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"degree": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"fieldOfStudy": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"startDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"endDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"current": {
+									"type": [
+										"boolean",
+										"null"
+									]
+								},
+								"description": {
+									"type": [
+										"string",
+										"null"
+									]
+								}
+							}
+						}
+					},
+					"languages": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "object",
+							"properties": {
+								"language": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"proficiency": {
+									"type": [
+										"string",
+										"null"
+									],
+									"enum": [
+										"basic",
+										"intermediate",
+										"advanced",
+										"fluent",
+										"native",
+										null
+									]
+								}
+							}
+						}
+					},
+					"certifications": {
+						"type": [
+							"array",
+							"null"
+						],
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"name": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"issuer": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"issueDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"expirationDate": {
+									"type": [
+										"string",
+										"null"
+									]
+								},
+								"credentialUrl": {
+									"type": [
+										"string",
+										"null"
+									]
+								}
+							}
+						}
+					},
+					"cpf": false,
+					"document": false,
+					"nationalId": false,
+					"birthDate": false,
+					"dateOfBirth": false,
+					"gender": false,
+					"race": false,
+					"ethnicity": false
+				},
+				"required": [
+					"id"
+				]
+			},
+			"Salary": {
+				"title": "Salary",
+				"description": "Faixa salarial tipada (ADR-006, decisão 5 — vazamento 3). O texto livre continua aceito no campo `salary` do Job como fallback de compatibilidade, mas dois provedores só interoperam em busca com a forma tipada.",
+				"type": "object",
+				"properties": {
+					"min": {
+						"type": [
+							"number",
+							"null"
+						],
+						"minimum": 0
+					},
+					"max": {
+						"type": [
+							"number",
+							"null"
+						],
+						"minimum": 0
+					},
+					"currency": {
+						"type": "string",
+						"description": "ISO-4217 (ex.: BRL, USD).",
+						"pattern": "^[A-Z]{3}$"
+					},
+					"period": {
+						"type": "string",
+						"enum": [
+							"hour",
+							"day",
+							"month",
+							"year"
+						],
+						"description": "Período a que a faixa se refere."
+					},
+					"text": {
+						"type": [
+							"string",
+							"null"
+						],
+						"description": "Representação livre para exibição, quando o provedor tiver uma."
+					}
+				},
+				"required": [
+					"currency",
+					"period"
+				],
+				"anyOf": [
+					{
+						"required": [
+							"min"
+						]
+					},
+					{
+						"required": [
+							"max"
+						]
+					}
+				]
+			}
+		},
+		"securitySchemes": {
+			"oauth": {
+				"type": "http",
+				"scheme": "bearer",
+				"description": "Access token do OAuth 2.1 do provedor (descoberta via RFC 9728: /.well-known/oauth-protected-resource). O talento autoriza; o token é dele."
+			}
+		}
+	}
+}

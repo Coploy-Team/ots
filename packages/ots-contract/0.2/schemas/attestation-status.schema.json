@@ -1,0 +1,14 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.2/schemas/attestation-status.schema.json",
+	"title": "AttestationStatus",
+	"description": "Resposta do statusUrl de um attestation. Público, sem auth: quem tem o documento pode checar se ainda vale. Revogação é do TALENTO (ADR-006, decisão 6) — o provedor executa, não decide. `unknown` responde jti que o emissor não reconhece SEM revelar se algum dia existiu.",
+	"type": "object",
+	"properties": {
+		"jti": { "type": "string" },
+		"status": { "type": "string", "enum": ["valid", "revoked", "unknown"] },
+		"revokedAt": { "type": ["string", "null"], "format": "date-time" },
+		"checkedAt": { "type": "string", "format": "date-time" }
+	},
+	"required": ["jti", "status", "checkedAt"]
+}

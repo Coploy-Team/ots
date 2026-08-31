@@ -1,0 +1,41 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/plugin/interview-session.schema.json",
+	"title": "InterviewSessionContract",
+	"description": "ENTRADA do plugin de motor (ADR-007, decisão 2): a operação que o ATS (ou canal do candidato) chama para criar/retomar a sessão de entrevista. NORMATIVO: a operação DEVE ser idempotente por (candidato, vaga) — chamar de novo devolve a MESMA sessão, nunca duplica a participação. Na referência: GET {motor}/interview/session?company=&postJob=, Bearer do candidato.",
+	"type": "object",
+	"properties": {
+		"request": {
+			"type": "object",
+			"description": "Parâmetros da chamada. A autenticação do candidato viaja como Bearer (token verificável pelo motor); os ids identificam a vaga no ATS.",
+			"properties": {
+				"companyId": { "type": "string", "minLength": 1 },
+				"jobId": { "type": "string", "minLength": 1 },
+				"source": {
+					"type": ["string", "null"],
+					"maxLength": 40,
+					"description": "Porta de entrada do candidato (careers, mcp, whatsapp…). Ausente = direct."
+				},
+				"sourceDetail": { "type": ["string", "null"], "maxLength": 200 }
+			},
+			"required": ["companyId", "jobId"]
+		},
+		"response": {
+			"type": "object",
+			"description": "Mínimo normativo da resposta. O motor PODE devolver mais campos (a referência devolve a sessão inteira — ainda não tipada, dívida registrada); o consumidor DEVE ignorar o que não conhece.",
+			"properties": {
+				"interviewUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Onde o candidato grava/retoma no navegador."
+				},
+				"processEntryId": {
+					"type": ["string", "null"],
+					"description": "Id da participação criada/retomada, quando o motor o expõe."
+				}
+			},
+			"required": ["interviewUrl"]
+		}
+	},
+	"required": ["request", "response"]
+}

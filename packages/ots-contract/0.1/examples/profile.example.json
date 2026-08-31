@@ -1,0 +1,50 @@
+{
+	"id": "HhJYCVv87SD7OTTkKJRtvtUUcUp3E46y",
+	"name": "João Candidato",
+	"email": "joao.candidato@exemplo.com",
+	"phone": "11977776666",
+	"photoUrl": null,
+	"headline": "Analista de RH em transição para People Analytics",
+	"summary": "Cinco anos conduzindo processos seletivos ponta a ponta.",
+	"occupation": "Analista de RH",
+	"level": "Pleno",
+	"yearsOfExperience": 5,
+	"professionalObjectives": null,
+	"company": "Empresa UI Teste",
+	"location": "São Paulo, SP",
+	"countryOfResidence": "BR",
+	"countriesOfInterest": ["BR", "PT"],
+	"skills": ["Recrutamento", "Entrevistas", "People Analytics"],
+	"resumeUrl": "https://storage.example.com/users/HhJY/resume.pdf",
+	"linkedinUrl": "https://linkedin.com/in/joaocandidato",
+	"completeness": 82,
+	"missingFields": ["certifications"],
+	"fieldSources": { "summary": "chat", "skills": "resume", "occupation": "dashboard" },
+	"experiences": [
+		{
+			"id": "exp-1",
+			"title": "Analista de RH",
+			"company": "Empresa UI Teste",
+			"location": "São Paulo",
+			"startDate": "2023-01",
+			"endDate": null,
+			"current": true,
+			"description": "Recrutamento tech ponta a ponta.",
+			"skills": ["Recrutamento"]
+		}
+	],
+	"education": [
+		{
+			"id": "edu-1",
+			"institution": "USP",
+			"degree": "Bacharelado",
+			"fieldOfStudy": "Psicologia",
+			"startDate": "2016-01",
+			"endDate": "2020-12",
+			"current": false,
+			"description": null
+		}
+	],
+	"languages": [{ "language": "Inglês", "proficiency": "advanced" }],
+	"certifications": []
+}
