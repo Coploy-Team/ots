@@ -1,0 +1,29 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/schemas/job-details.schema.json",
+	"title": "JobDetails",
+	"description": "Job + campos de leitura longa. `questionCount` expõe a QUANTIDADE de perguntas quando o provedor tem entrevista — nunca o conteúdo.",
+	"allOf": [{ "$ref": "job.schema.json" }],
+	"type": "object",
+	"properties": {
+		"description": { "type": ["string", "null"] },
+		"requirements": { "type": ["string", "null"] },
+		"responsibilities": { "type": ["string", "null"] },
+		"benefits": { "type": ["string", "null"] },
+		"companyDescription": { "type": ["string", "null"] },
+		"contractType": { "type": ["string", "null"] },
+		"jobHours": { "type": ["string", "null"] },
+		"educationalRequirements": {
+			"type": ["array", "null"],
+			"items": { "type": "string" }
+		},
+		"requiresPreviousExperience": { "type": ["boolean", "null"] },
+		"closingDate": { "type": ["string", "null"], "format": "date-time" },
+		"interviewMode": { "type": ["string", "null"] },
+		"questionCount": {
+			"type": ["integer", "null"],
+			"minimum": 0,
+			"description": "Opcional como o interviewUrl: só existe onde há entrevista."
+		}
+	}
+}

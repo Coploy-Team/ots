@@ -1,0 +1,122 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.3/schemas/process-feedback.schema.json",
+	"title": "ProcessFeedback",
+	"description": "Retorno do processo ao talento (submit_feedback), no vocabulário do anti-ghosting: toda mudança que importa para a pessoa chega com texto humano. É RETORNO, não veredito numérico: nota, aprovação, fit, posição no ranking e anotações internas são PROIBIDOS (`false`). O motivo só existe quando o processo termina para a pessoa, e só entre os motivos que um candidato pode ver.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"minLength": 1
+		},
+		"processEntryId": {
+			"type": "string",
+			"minLength": 1
+		},
+		"jobId": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"jobName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"companyName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"stage": {
+			"type": "string",
+			"enum": [
+				"received",
+				"in_review",
+				"interview_scheduled",
+				"advanced",
+				"not_selected",
+				"hired",
+				"position_closed",
+				"withdrawn"
+			],
+			"description": "Em que pé o processo está PARA A PESSOA — não a etapa interna do quadro do recrutador."
+		},
+		"message": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 4000,
+			"description": "O retorno em texto humano. Obrigatório sempre: status sem explicação é o ghosting que o protocolo existe para acabar."
+		},
+		"reasonCode": {
+			"type": [
+				"string",
+				"null"
+			],
+			"enum": [
+				"requirements_not_met",
+				"insufficient_experience",
+				"salary_mismatch",
+				"position_cancelled",
+				"other_candidate_hired",
+				null
+			],
+			"description": "Só em `not_selected` e `position_closed`, e só motivos visíveis ao candidato. Motivo interno (perfil não aderente, outro) não viaja: vai `null` e o `message` explica."
+		},
+		"nextStep": {
+			"type": [
+				"string",
+				"null"
+			],
+			"maxLength": 1000,
+			"description": "O que acontece a seguir, quando há."
+		},
+		"sentAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"score": false,
+		"approved": false,
+		"fit": false,
+		"rankingPosition": false,
+		"internalNotes": false
+	},
+	"required": [
+		"id",
+		"processEntryId",
+		"stage",
+		"message",
+		"sentAt"
+	],
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"stage": {
+						"enum": [
+							"received",
+							"in_review",
+							"interview_scheduled",
+							"advanced",
+							"hired",
+							"withdrawn"
+						]
+					}
+				},
+				"required": [
+					"stage"
+				]
+			},
+			"then": {
+				"properties": {
+					"reasonCode": {
+						"type": "null"
+					}
+				}
+			}
+		}
+	]
+}

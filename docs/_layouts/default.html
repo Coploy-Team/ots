@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.title and page.title != site.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ page.description | default: site.description }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+</head>
+<body>
+<header class="bar">
+  <div class="bar-inner">
+    <a class="brand" href="{{ '/' | relative_url }}"><span class="mark">OTS</span><span class="brand-name">Open Talent Standard</span></a>
+    <nav>
+      <a href="{{ '/specs/spec-0.1.html' | relative_url }}"{% if page.url contains 'spec-0.1' %} aria-current="page"{% endif %}>0.1</a>
+      <a href="{{ '/specs/spec-0.2.html' | relative_url }}"{% if page.url contains 'spec-0.2' %} aria-current="page"{% endif %}>0.2</a>
+      <a href="{{ '/specs/spec-0.3.html' | relative_url }}"{% if page.url contains 'spec-0.3' %} aria-current="page"{% endif %}>0.3</a>
+      <a href="https://github.com/Coploy-Team/ots">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class="doc">
+{{ content }}
+</main>
+<footer class="foot">
+  <p>OTS é um padrão aberto (Apache-2.0). A prosa explica; os <a href="https://github.com/Coploy-Team/ots/tree/main/packages/ots-contract">schemas</a> definem; a <a href="https://github.com/Coploy-Team/ots/tree/main/packages/ots-conformance">suíte de conformidade</a> prova.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,14 @@
+title: OTS — Open Talent Standard
+description: Um padrão aberto para dados portáteis de talento — vaga, processo, perfil, prova de entrevista, agendamento e retorno.
+baseurl: /ots
+url: https://coploy-team.github.io
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

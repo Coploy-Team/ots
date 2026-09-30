@@ -1,0 +1,17 @@
+{
+	"$comment": "Entrada em processo da referência: a extensão `interview` carrega o progresso e o link.",
+	"id": "7f3a1b2c-0000-4111-9222-333344445555",
+	"jobId": "analista-de-rh-27v4lg",
+	"companyId": "empresa-ui-teste-260o66",
+	"jobName": "Analista de RH",
+	"companyName": "Empresa UI Teste",
+	"status": "in_progress",
+	"startedAt": "2026-08-21T09:00:00.000Z",
+	"completedAt": null,
+	"feedback": { "strengths": [], "development": [], "suggestions": [] },
+	"interview": {
+		"questionsAnswered": 2,
+		"questionsTotal": 5,
+		"interviewUrl": "https://interview.example.com/job/analista-de-rh-27v4lg/company/empresa-ui-teste-260o66/login"
+	}
+}

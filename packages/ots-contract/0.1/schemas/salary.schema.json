@@ -1,0 +1,27 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.1/schemas/salary.schema.json",
+	"title": "Salary",
+	"description": "Faixa salarial tipada (ADR-006, decisão 5 — vazamento 3). O texto livre continua aceito no campo `salary` do Job como fallback de compatibilidade, mas dois provedores só interoperam em busca com a forma tipada.",
+	"type": "object",
+	"properties": {
+		"min": { "type": ["number", "null"], "minimum": 0 },
+		"max": { "type": ["number", "null"], "minimum": 0 },
+		"currency": {
+			"type": "string",
+			"description": "ISO-4217 (ex.: BRL, USD).",
+			"pattern": "^[A-Z]{3}$"
+		},
+		"period": {
+			"type": "string",
+			"enum": ["hour", "day", "month", "year"],
+			"description": "Período a que a faixa se refere."
+		},
+		"text": {
+			"type": ["string", "null"],
+			"description": "Representação livre para exibição, quando o provedor tiver uma."
+		}
+	},
+	"required": ["currency", "period"],
+	"anyOf": [{ "required": ["min"] }, { "required": ["max"] }]
+}

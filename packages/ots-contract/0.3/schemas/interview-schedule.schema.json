@@ -1,0 +1,239 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.3/schemas/interview-schedule.schema.json",
+	"title": "InterviewSchedule",
+	"description": "Proposta de horário de entrevista de uma empresa para o talento (schedule_interview). A empresa PROPÕE janelas; o talento (ou o agente dele) escolhe UMA delas ou recusa. Nada de agenda de terceiros, de outros candidatos ou de anotações do entrevistador (proibições executáveis via `false`). O modo de acesso (link, endereço) só existe depois da confirmação.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"minLength": 1
+		},
+		"processEntryId": {
+			"type": "string",
+			"minLength": 1,
+			"description": "A participação (ProcessEntry 0.1) a que a entrevista pertence."
+		},
+		"jobId": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"jobName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"companyName": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"format": {
+			"type": "string",
+			"enum": [
+				"video_call",
+				"phone",
+				"onsite"
+			],
+			"description": "Como a conversa acontece. Entrevista gravada por IA não é agendada — é o `interviewUrl` da extensão `interview` do ProcessEntry."
+		},
+		"durationMinutes": {
+			"type": "integer",
+			"minimum": 5,
+			"maximum": 480
+		},
+		"timezone": {
+			"type": "string",
+			"minLength": 1,
+			"description": "Fuso IANA de referência para exibição (ex.: America/Sao_Paulo). Os instantes são sempre ISO 8601 com offset."
+		},
+		"slots": {
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 20,
+			"items": {
+				"type": "object",
+				"properties": {
+					"start": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"end": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"start",
+					"end"
+				],
+				"additionalProperties": false
+			},
+			"description": "Janelas propostas pela empresa."
+		},
+		"status": {
+			"type": "string",
+			"enum": [
+				"proposed",
+				"confirmed",
+				"declined",
+				"expired",
+				"cancelled"
+			]
+		},
+		"confirmedSlot": {
+			"oneOf": [
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "string",
+							"format": "date-time"
+						},
+						"end": {
+							"type": "string",
+							"format": "date-time"
+						}
+					},
+					"required": [
+						"start",
+						"end"
+					],
+					"additionalProperties": false
+				},
+				{
+					"type": "null"
+				}
+			],
+			"description": "A janela escolhida — obrigatória quando `confirmed`."
+		},
+		"expiresAt": {
+			"type": [
+				"string",
+				"null"
+			],
+			"format": "date-time",
+			"description": "Depois disto a proposta vira `expired` e não aceita resposta."
+		},
+		"note": {
+			"type": [
+				"string",
+				"null"
+			],
+			"maxLength": 1000,
+			"description": "Mensagem da empresa ao talento, em texto humano."
+		},
+		"joinDetails": {
+			"type": [
+				"object",
+				"null"
+			],
+			"description": "Como entrar — só quando `confirmed` (quem não confirmou não recebe link nem endereço).",
+			"properties": {
+				"meetingUrl": {
+					"type": [
+						"string",
+						"null"
+					],
+					"format": "uri"
+				},
+				"address": {
+					"type": [
+						"string",
+						"null"
+					]
+				},
+				"instructions": {
+					"type": [
+						"string",
+						"null"
+					],
+					"maxLength": 1000
+				}
+			},
+			"additionalProperties": false
+		},
+		"createdAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"otherCandidates": false,
+		"interviewerNotes": false,
+		"score": false,
+		"approved": false
+	},
+	"required": [
+		"id",
+		"processEntryId",
+		"format",
+		"durationMinutes",
+		"timezone",
+		"slots",
+		"status",
+		"createdAt"
+	],
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"status": {
+						"const": "confirmed"
+					}
+				},
+				"required": [
+					"status"
+				]
+			},
+			"then": {
+				"properties": {
+					"confirmedSlot": {
+						"type": "object",
+						"properties": {
+							"start": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"end": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"required": [
+							"start",
+							"end"
+						],
+						"additionalProperties": false
+					}
+				},
+				"required": [
+					"confirmedSlot"
+				]
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"status": {
+						"not": {
+							"const": "confirmed"
+						}
+					}
+				},
+				"required": [
+					"status"
+				]
+			},
+			"then": {
+				"properties": {
+					"joinDetails": {
+						"type": "null"
+					}
+				}
+			}
+		}
+	]
+}

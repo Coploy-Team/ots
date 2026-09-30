@@ -1,0 +1,80 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.3/schemas/process-event.schema.json",
+	"title": "ProcessEvent",
+	"description": "Envelope de entrega entre provedores: o ATS da empresa avisa o provedor do talento (onde está o agente dele) que há proposta de horário ou retorno novo. Mesmo payload dos recursos; entrega por webhook assinado (fora desta spec).",
+	"type": "object",
+	"properties": {
+		"event": {
+			"type": "string",
+			"enum": [
+				"interview.schedule_proposed",
+				"interview.schedule_updated",
+				"process.feedback"
+			]
+		},
+		"occurredAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"schedule": {
+			"$ref": "interview-schedule.schema.json"
+		},
+		"feedback": {
+			"$ref": "process-feedback.schema.json"
+		}
+	},
+	"required": [
+		"event",
+		"occurredAt"
+	],
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"event": {
+						"const": "process.feedback"
+					}
+				},
+				"required": [
+					"event"
+				]
+			},
+			"then": {
+				"required": [
+					"feedback"
+				],
+				"not": {
+					"required": [
+						"schedule"
+					]
+				}
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"event": {
+						"enum": [
+							"interview.schedule_proposed",
+							"interview.schedule_updated"
+						]
+					}
+				},
+				"required": [
+					"event"
+				]
+			},
+			"then": {
+				"required": [
+					"schedule"
+				],
+				"not": {
+					"required": [
+						"feedback"
+					]
+				}
+			}
+		}
+	]
+}

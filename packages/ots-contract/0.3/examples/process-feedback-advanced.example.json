@@ -1,0 +1,12 @@
+{
+	"id": "fb_1",
+	"processEntryId": "pe_91Kd",
+	"jobId": "dev-node-pleno",
+	"jobName": "Desenvolvedora Node.js Pleno",
+	"companyName": "Acme Tecnologia",
+	"stage": "advanced",
+	"message": "Seu perfil foi aceito no lugar da entrevista gravada. O próximo passo é uma conversa de 45 minutos com a liderança técnica.",
+	"reasonCode": null,
+	"nextStep": "Você vai receber as opções de horário ainda esta semana.",
+	"sentAt": "2026-09-30T12:00:00-03:00"
+}
