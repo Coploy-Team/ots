@@ -1,0 +1,24 @@
+{
+	"name": "@coploy/ots-conformance",
+	"version": "0.1.0",
+	"description": "Suíte de conformidade OTS 0.1 — valida artefato, payloads e provedores vivos contra @coploy/ots-contract",
+	"license": "Apache-2.0",
+	"private": true,
+	"bin": {
+		"ots-conformance": "./src/cli.ts"
+	},
+	"scripts": {
+		"conformance": "tsx src/cli.ts",
+		"lint": "tsc --noEmit -p tsconfig.json",
+		"test": "tsx src/cli.ts validate"
+	},
+	"dependencies": {
+		"@coploy/ots-contract": "*",
+		"ajv": "^8.17.1",
+		"ajv-formats": "^3.0.1"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.2",
+		"typescript": "~5.9.3"
+	}
+}

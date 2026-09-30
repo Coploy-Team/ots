@@ -1,0 +1,54 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ots.coploy.io/0.3-draft/schemas/schedule-response.schema.json",
+	"title": "ScheduleResponse",
+	"description": "A resposta do talento a uma proposta de horário: confirmar UMA das janelas propostas (pelo `start` exato) ou recusar com um motivo do vocabulário. Confirmar é idempotente; a janela precisa existir na proposta (regra semântica que a suíte também checa).",
+	"oneOf": [
+		{
+			"type": "object",
+			"properties": {
+				"action": {
+					"const": "confirm"
+				},
+				"slotStart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			},
+			"required": [
+				"action",
+				"slotStart"
+			],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"action": {
+					"const": "decline"
+				},
+				"reason": {
+					"type": "string",
+					"enum": [
+						"no_slot_fits",
+						"not_interested",
+						"accepted_other_offer",
+						"other"
+					]
+				},
+				"note": {
+					"type": [
+						"string",
+						"null"
+					],
+					"maxLength": 1000
+				}
+			},
+			"required": [
+				"action",
+				"reason"
+			],
+			"additionalProperties": false
+		}
+	]
+}

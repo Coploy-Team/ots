@@ -1,0 +1,17 @@
+{
+	"$comment": "Vaga da implementação de referência (Coploy): tem entrevista, salary em texto livre (fallback aceito).",
+	"jobId": "analista-de-rh-27v4lg",
+	"companyId": "empresa-ui-teste-260o66",
+	"title": "Analista de RH",
+	"companyName": "Empresa UI Teste",
+	"companyLogo": null,
+	"location": "Brasil",
+	"workModality": "Remoto",
+	"employmentType": "CLT",
+	"careerLevel": "Pleno",
+	"language": "pt-BR",
+	"salary": "A combinar",
+	"mainSkills": null,
+	"postedAt": "2026-08-20T23:00:00.000Z",
+	"interviewUrl": "https://interview.example.com/job/analista-de-rh-27v4lg/company/empresa-ui-teste-260o66/login"
+}

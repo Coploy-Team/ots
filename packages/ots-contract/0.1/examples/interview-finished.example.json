@@ -1,0 +1,17 @@
+{
+	"event": "interview.finished",
+	"interviewId": "7f3a1b2c-0000-4111-9222-333344445555",
+	"jobId": "analista-de-rh-27v4lg",
+	"companyId": "empresa-ui-teste-260o66",
+	"userId": "HhJYCVv87SD7OTTkKJRtvtUUcUp3E46y",
+	"candidateEmail": "joao.candidato@exemplo.com",
+	"candidateName": "João Candidato",
+	"jobName": "Analista de RH",
+	"recruiterInterviewLink": "https://ats.example.com/vagas/analista-de-rh-27v4lg/candidatos/HhJYCVv87SD7OTTkKJRtvtUUcUp3E46y",
+	"candidateInterviewLink": "https://interview.example.com/job/analista-de-rh-27v4lg/company/empresa-ui-teste-260o66/login",
+	"score": 8.4,
+	"approved": true,
+	"feedback": "Boa estruturação e exemplos concretos nas respostas técnicas.",
+	"candidateFeedback": "Você demonstrou clareza ao explicar decisões. Aprofunde métricas de resultado.",
+	"timestamp": "2026-08-21T12:34:56.000Z"
+}

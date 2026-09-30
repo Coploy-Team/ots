@@ -1,0 +1,36 @@
+{
+	"iss": "https://ots-reference.example.com",
+	"sub": "HhJYCVv87SD7OTTkKJRtvtUUcUp3E46y",
+	"jti": "att_7f3a1b2c0e114f22",
+	"iat": 1787270400,
+	"exp": 1850342400,
+	"ots_version": "0.2",
+	"tier": "summary",
+	"subject": {
+		"displayName": "João Candidato",
+		"emailHash": "sha256:82da1fa76143b657af42ca8e410a074106802a74d626347fb05daa0d2877a713"
+	},
+	"process": {
+		"companyName": "Empresa UI Teste",
+		"jobTitle": "Analista de RH",
+		"processEntryId": null
+	},
+	"interview": {
+		"completedAt": "2026-08-21T12:30:00.000Z",
+		"mode": "video",
+		"language": "pt-BR",
+		"questionsTotal": 5,
+		"durationSeconds": 1140
+	},
+	"outcome": {
+		"score": null,
+		"strengths": [
+			"Estruturação clara",
+			"Exemplos concretos"
+		],
+		"developmentAreas": [
+			"Métricas de resultado"
+		]
+	},
+	"statusUrl": "https://ots-reference.example.com/ots/attestations/att_7f3a1b2c0e114f22/status"
+}

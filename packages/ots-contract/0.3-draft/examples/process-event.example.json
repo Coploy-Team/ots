@@ -1,0 +1,30 @@
+{
+	"event": "interview.schedule_proposed",
+	"occurredAt": "2026-09-30T12:00:01-03:00",
+	"schedule": {
+		"id": "sch_7Qm2",
+		"processEntryId": "pe_91Kd",
+		"jobId": "dev-node-pleno",
+		"jobName": "Desenvolvedora Node.js Pleno",
+		"companyName": "Acme Tecnologia",
+		"format": "video_call",
+		"durationMinutes": 45,
+		"timezone": "America/Sao_Paulo",
+		"slots": [
+			{
+				"start": "2026-10-06T13:00:00-03:00",
+				"end": "2026-10-06T13:45:00-03:00"
+			},
+			{
+				"start": "2026-10-07T10:00:00-03:00",
+				"end": "2026-10-07T10:45:00-03:00"
+			}
+		],
+		"status": "proposed",
+		"confirmedSlot": null,
+		"expiresAt": "2026-10-05T23:59:00-03:00",
+		"note": "Conversa com a liderança técnica sobre o seu projeto de APIs.",
+		"joinDetails": null,
+		"createdAt": "2026-09-30T12:00:00-03:00"
+	}
+}

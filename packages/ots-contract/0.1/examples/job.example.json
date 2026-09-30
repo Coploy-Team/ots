@@ -1,0 +1,22 @@
+{
+	"$comment": "Vaga de um provedor SEM entrevista por IA — conforme (interviewUrl é opcional) e com salary tipado.",
+	"jobId": "desenvolvedor-nodejs-9x2k1",
+	"companyId": "forkly-studio-267jk0",
+	"title": "Desenvolvedor NodeJS",
+	"companyName": "Forkly Studio",
+	"companyLogo": "https://cdn.example.com/forkly/logo.png",
+	"location": "São Paulo, SP, Brasil",
+	"workModality": "Remoto",
+	"employmentType": "CLT",
+	"careerLevel": "Pleno",
+	"language": "pt-BR",
+	"salary": {
+		"min": 9000,
+		"max": 12000,
+		"currency": "BRL",
+		"period": "month",
+		"text": "R$ 9.000–12.000/mês"
+	},
+	"mainSkills": "Node.js, React, PostgreSQL",
+	"postedAt": "2026-08-20T12:00:00.000Z"
+}
